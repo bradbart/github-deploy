@@ -6,14 +6,10 @@ module.exports = function (config) {
         .get('/deployments/:repo', deploymentHandler);
 
     function deploymentHandler(request, response) {
-        console.log(request.params.repo); 
-        
         if(!config || !config[request.params.repo]) {
             response.status(404).send('Not found'); 
             return; 
         }
-        
-        console.log(__dirname); 
         console.log('Detected update for respository \'', request.params.repo, '\'')
         var cmd = spawn(__dirname + '/deploy.sh', [ request.params.repo ]);
         cmd.stdout.on('data', function (data) {
