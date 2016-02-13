@@ -6,9 +6,9 @@ module.exports = function (config) {
         .get('/deployments/:repo', deploymentHandler);
 
     function deploymentHandler(request, response) {
-        (!config || (config.repos.indexOf(request.params.repo) === -1)) 
-            && response.end(404);   
+        (!config || !config[request.params.repo]) && response.end(404);   
         
+        console.log(__dirname); 
         console.log('Detected update for respository \'', request.params.repo, '\'')
         var cmd = spawn(__dirname + '/deploy.sh', [ request.params.repo ]); 
         cmd.stdout.on('data', function (data) {
