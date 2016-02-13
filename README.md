@@ -1,4 +1,4 @@
 # github-deploy
-Deploy NodeJS services via github webhook service
+A router that simplifies the deployment of NodeJS services built with GitHub. 
 
-Defines an express router that can be used to deploy NodeJS webservices
+

@@ -35,6 +35,7 @@ function deploymentHandler(config, request, response) {
             console.log(stdout); 
             console.log(stderr); 
             response.status(500).send('Error occurred during deployment');
+            exec("git reset --hard HEAD@{1}")
             return; 
         } else {
             console.log('Deployment success for ', request.params.repo, '/', request.body.ref); 
