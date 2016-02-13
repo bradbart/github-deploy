@@ -15,7 +15,7 @@ module.exports = function (config) {
         
         console.log(__dirname); 
         console.log('Detected update for respository \'', request.params.repo, '\'')
-        var cmd = spawn(__dirname + '/deploy.sh >> info.log', [ request.params.repo ]);
+        var cmd = spawn(__dirname + '/deploy.sh', [ request.params.repo ]);
         cmd.stdout.on('data', function (data) {
             console.log(data.toString()); 
         }) 
