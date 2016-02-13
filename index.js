@@ -1,32 +1,25 @@
-var express = require('express'); 
 var exec = require('child_process').exec; 
-var bodyParser = require('body-parser'); 
+var gitHubWebHookHandler = require('github-webhook-handler'); 
 
 module.exports = function (config) {
-    return express.Router()
-        .use(bodyParser.json()) 
-        .post('/deployments/:repo', deploymentsRouter); 
-        
-    function deploymentsRouter(req, res) {
-        deploymentHandler(config, req, res); 
+    var webhook = gitHubWebHookHandler({path: config.path, secret: config.secret}); 
+    webhook.on('push', function (event) {
+        deployRepositoryUpdate(config, event); 
+    }); 
+    return function (request, response) {
+        webhook(request, response, function (error) {
+            response.statusCode = 404
+            response.end('no such location'); 
+        }); 
     }
-}; 
+};
 
-function deploymentHandler(config, request, response) {
-    var repo = request.params.repo; 
-    var branch = request.body.ref && request.body.ref.replace('refs/heads/', ''); 
-    
-    var info = config && config[repo] && config[repo][branch]; 
-    
-    if(!info) {
-        response.status(404).send('Not found'); 
-        return; 
-    }
-    
-    if(!info.path) {
-        response.send(''); 
-        return; 
-    }
+function deployRepositoryUpdate(config, event) {
+    var repo = event.payload.repository.name; 
+    var branch = event.payload.ref; 
+    var info = config && config.repos && config.repos[repo] && config.repos[repo][branch]; 
+
+    if(!info || !info.path) return; 
     
     var cmd = "git pull && npm install && npm test"; 
     cmd += info.restartCommand ? " && " + info.restartCommand : ""; 
@@ -34,13 +27,9 @@ function deploymentHandler(config, request, response) {
         if(error) {
             console.log(stdout); 
             console.log(stderr); 
-            response.status(500).send('Error occurred during deployment');
             exec("git reset --hard HEAD@{1}")
-            return; 
         } else {
-            console.log('Deployment success for ', request.params.repo, '/', request.body.ref); 
-            response.send(''); 
-            return;             
+            console.log('Deployment success for ', repo, '/', branch); 
         }
     }); 
 }
