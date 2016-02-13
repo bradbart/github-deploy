@@ -1,0 +1,22 @@
+{
+  "name": "github-deploy",
+  "version": "1.0.0",
+  "description": "Deploy NodeJS services via github webhook service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bradbart/github-deploy"
+  },
+  "author": "Brad Bartholomew <bradley.bartholomew@live.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bradbart/github-deploy/issues"
+  },
+  "homepage": "https://github.com/bradbart/github-deploy",
+  "dependencies": {
+    "expres": "0.0.5"
+  }
+}
