@@ -7,17 +7,15 @@ module.exports = function (config) {
 
     function deploymentHandler(request, response) {
         console.log(request.params.repo); 
-        (!config || !config[request.params.repo]) && response.status(404).end('');   
+        
+        if(!config || !config[request.params.repo]) {
+            response.status(404).send('Not found'); 
+            return; 
+        }
         
         console.log(__dirname); 
         console.log('Detected update for respository \'', request.params.repo, '\'')
-        var cmd = spawn(__dirname + '/deploy.sh', [ request.params.repo ]); 
-        cmd.stdout.on('data', function (data) {
-            console.log(data); 
-        })
-        cmd.stderr.on('data', function (data) {
-            console.log(data); 
-        })
+        var cmd = spawn(__dirname + '/deploy.sh >> info.log', [ request.params.repo ]); 
         response.send(''); 
     }
 }; 
