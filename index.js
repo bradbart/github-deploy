@@ -2,11 +2,12 @@ var express = require('express');
 var spawn = require('child_process').spawn; 
 
 module.exports = function (config) {
-    return express.Router().put('/deployments/:repo', deploymentHandler)
+    return express.Router().post('/deployments/:repo', deploymentHandler)
         .get('/deployments/:repo', deploymentHandler);
 
     function deploymentHandler(request, response) {
-        (!config || !config[request.params.repo]) && response.end(404);   
+        console.log(request.params.repo); 
+        (!config || !config[request.params.repo]) && response.status(404).end('');   
         
         console.log(__dirname); 
         console.log('Detected update for respository \'', request.params.repo, '\'')
