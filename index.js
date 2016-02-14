@@ -16,7 +16,7 @@ module.exports = function (config) {
 
 function deployRepositoryUpdate(config, event) {
     var repo = event.payload.repository.name; 
-    var branch = event.payload.ref.replace('', 'refs/heads/'); 
+    var branch = event.payload.ref.replace('refs/heads/', ''); 
     var info = config && config.repos && config.repos[repo] && config.repos[repo][branch]; 
 
     if(!info || !info.path) return; 
