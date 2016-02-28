@@ -17,13 +17,12 @@ module.exports = function (config) {
 function deployRepositoryUpdate(config, event) {
     var repo = event.payload.repository.name; 
     var branch = event.payload.ref.replace('refs/heads/', ''); 
-    var info = config && config.repos && config.repos[repo] && config.repos[repo][branch]; 
 
-    if(!info || !info.path) return; 
+    if(config.repository !== repo || config.branch !== branch) return; 
     
     var cmd = "git pull && npm install && npm test"; 
-    cmd += info.restartCommand ? " && " + info.restartCommand : ""; 
-    exec(cmd, { cwd: info.path }, function (error, stdout, stderr) {
+    cmd += config.deploymentCommand ? " && " + config.deploymentCommand : ""; 
+    exec(cmd, { cwd: config.deploymentDirectory }, function (error, stdout, stderr) {
         if(error) {
             console.log(stdout); 
             console.log(stderr); 
